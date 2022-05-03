@@ -1,4 +1,4 @@
-module amqp-client
+module github.com/branthony-92/amqp-client
 
 go 1.18
 
