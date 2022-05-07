@@ -1,5 +1,8 @@
 package broker
 
+type Routes map[string]*route
+type HTTPRoutes map[string]*httpRoute
+
 type MessageHandler func(msg Message)
 
 type route struct {
@@ -9,12 +12,22 @@ type route struct {
 	handler  MessageHandler
 }
 
+type httpRoute struct {
+	source  string
+	handler MessageHandler
+}
+
 type messageRouter struct {
-	routes map[string]*route
+	routes     Routes
+	httpRoutes HTTPRoutes
 }
 
 func (router *messageRouter) addRoute(r *route) {
 	router.routes[r.key] = r
+}
+
+func (router *messageRouter) addHTTPRoute(r *httpRoute) {
+	router.httpRoutes[r.source] = r
 }
 
 func (router *messageRouter) routeMessage(msg Message) {

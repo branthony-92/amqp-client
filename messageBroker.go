@@ -181,7 +181,7 @@ func defaultPublishOpts() publishOptions {
 
 func (m *messageBroker) Publish(msg []byte, opts ...PublishOption) error {
 
-	options := publishOptions{}
+	options := m.publishOpts
 
 	// allow any options set on broker creation to be overridden
 	for _, o := range opts {
