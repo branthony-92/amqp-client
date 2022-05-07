@@ -10,6 +10,7 @@ import (
 type MessageBroker interface {
 	Publish([]byte, ...PublishOption) error
 	RegisterRoute(queue string, key string, exchange string, handler MessageHandler) error
+	StartConsuming(opts ...ChannelOption) error
 	Shutdown()
 }
 
