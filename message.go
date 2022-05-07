@@ -17,7 +17,7 @@ type Message interface {
 }
 
 type message struct {
-	msg      *amqp.Delivery
+	msg      amqp.Delivery
 	queue    string
 	exchange string
 }

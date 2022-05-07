@@ -225,11 +225,12 @@ func (m *messageBroker) RegisterRoute(queue, key, exchange string, handler Messa
 }
 
 type channelOptions struct {
-	consumer  string
-	autoAck   bool
-	exclusive bool
-	noLocal   bool
-	noWait    bool
+	consumer       string
+	autoAck        bool
+	exclusive      bool
+	noLocal        bool
+	noWait         bool
+	defaultHandler MessageHandler
 }
 
 type ChannelOption func(*channelOptions) error
@@ -269,14 +270,22 @@ func WithConsumeNoWait(n bool) ChannelOption {
 	}
 }
 
+func WithDefaultHandler(h MessageHandler) ChannelOption {
+	return func(o *channelOptions) error {
+		o.defaultHandler = h
+		return nil
+	}
+}
+
 func (m *messageBroker) StartConsuming(opts ...ChannelOption) error {
 
 	options := channelOptions{
-		consumer:  "",
-		autoAck:   true,
-		exclusive: false,
-		noLocal:   false,
-		noWait:    false,
+		consumer:       "",
+		autoAck:        true,
+		exclusive:      false,
+		noLocal:        false,
+		noWait:         false,
+		defaultHandler: func(m Message) {},
 	}
 
 	for _, o := range opts {
@@ -306,10 +315,11 @@ func (m *messageBroker) StartConsuming(opts ...ChannelOption) error {
 				return errors.New("channel closed early")
 			}
 			msg := &message{
-				msg:      &data,
+				msg:      data,
 				queue:    m.publishOpts.queueName,
 				exchange: m.publishOpts.exchange,
 			}
+			options.defaultHandler(msg)
 			m.router.routeMessage(msg)
 		case <-m.ctx.Done():
 			return m.ctx.Err()
