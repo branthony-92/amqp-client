@@ -19,28 +19,28 @@ type queueOptions struct {
 	noWait     bool
 }
 
-func WithDurable(val bool) QueueOption {
+func WithQueueDurable(val bool) QueueOption {
 	return func(o *queueOptions) error {
 		o.durable = val
 		return nil
 	}
 }
 
-func WithAutoDelete(val bool) QueueOption {
+func WithQueueAutoDelete(val bool) QueueOption {
 	return func(o *queueOptions) error {
 		o.autoDelete = val
 		return nil
 	}
 }
 
-func WithExclusive(val bool) QueueOption {
+func WithQueueExclusive(val bool) QueueOption {
 	return func(o *queueOptions) error {
 		o.exclusive = val
 		return nil
 	}
 }
 
-func WithNoWait(val bool) QueueOption {
+func WithQueueNoWait(val bool) QueueOption {
 	return func(o *queueOptions) error {
 		o.noWait = val
 		return nil

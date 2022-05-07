@@ -21,6 +21,13 @@ type exchangeOptions struct {
 	noWait       bool
 }
 
+func WithExchangeTypee(t ExchangeType) ExchangeOption {
+	return func(o *exchangeOptions) error {
+		o.exchangeType = t
+		return nil
+	}
+}
+
 func WithExchangeDurable(val bool) ExchangeOption {
 	return func(o *exchangeOptions) error {
 		o.durable = val
