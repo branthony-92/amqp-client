@@ -14,11 +14,39 @@ const (
 type ExchangeOption func(*exchangeOptions) error
 
 type exchangeOptions struct {
-	Type       ExchangeType
-	Durable    bool
-	AutoDelete bool
-	Internal   bool
-	NoWait     bool
+	exchangeType ExchangeType
+	durable      bool
+	autoDelete   bool
+	internal     bool
+	noWait       bool
+}
+
+func WithExchangeDurable(val bool) ExchangeOption {
+	return func(o *exchangeOptions) error {
+		o.durable = val
+		return nil
+	}
+}
+
+func WithExchangeAutoDelete(val bool) ExchangeOption {
+	return func(o *exchangeOptions) error {
+		o.autoDelete = val
+		return nil
+	}
+}
+
+func WithExchangeInternal(val bool) ExchangeOption {
+	return func(o *exchangeOptions) error {
+		o.internal = val
+		return nil
+	}
+}
+
+func WithExchangeNoWait(val bool) ExchangeOption {
+	return func(o *exchangeOptions) error {
+		o.noWait = val
+		return nil
+	}
 }
 
 type exchange struct {
@@ -30,11 +58,11 @@ type exchange struct {
 
 func newExchange(channel *amqp.Channel, name string, options ...ExchangeOption) (*exchange, error) {
 	opts := exchangeOptions{
-		Type:       FanoutExchange, // type
-		Durable:    true,           // durable
-		AutoDelete: false,          // auto-deleted
-		Internal:   false,          // internal
-		NoWait:     false,          // no-wait
+		exchangeType: FanoutExchange, // type
+		durable:      true,           // durable
+		autoDelete:   false,          // auto-deleted
+		internal:     false,          // internal
+		noWait:       false,          // no-wait
 	}
 
 	for _, o := range options {
@@ -45,11 +73,11 @@ func newExchange(channel *amqp.Channel, name string, options ...ExchangeOption) 
 
 	err := channel.ExchangeDeclare(
 		name,
-		string(opts.Type),
-		opts.Durable,
-		opts.AutoDelete,
-		opts.Internal,
-		opts.NoWait,
+		string(opts.exchangeType),
+		opts.durable,
+		opts.autoDelete,
+		opts.internal,
+		opts.noWait,
 		nil,
 	)
 

@@ -13,19 +13,10 @@ type queue struct {
 }
 
 type queueOptions struct {
-	queueName  string
 	durable    bool
 	autoDelete bool
 	exclusive  bool
 	noWait     bool
-	args       amqp.Table
-}
-
-func WithQueueName(n string) QueueOption {
-	return func(o *queueOptions) error {
-		o.queueName = n
-		return nil
-	}
 }
 
 func WithDurable(val bool) QueueOption {
@@ -56,13 +47,6 @@ func WithNoWait(val bool) QueueOption {
 	}
 }
 
-func WithAgs(args amqp.Table) QueueOption {
-	return func(o *queueOptions) error {
-		o.args = args
-		return nil
-	}
-}
-
 type QueueOption func(*queueOptions) error
 
 func newQueue(channel *amqp.Channel, name string, opts ...QueueOption) (*queue, error) {
@@ -84,7 +68,7 @@ func newQueue(channel *amqp.Channel, name string, opts ...QueueOption) (*queue, 
 		options.autoDelete, // auto delete
 		options.exclusive,  // exclusive
 		options.noWait,     // no wait
-		options.args,       // arguments
+		nil,                // arguments
 	)
 	if err != nil {
 		return nil, err
